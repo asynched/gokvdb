@@ -53,7 +53,7 @@ Deletes a key from the database.
 
 ```sh
 # DELETE key
-DELETE name
+?> DELETE name
 ```
 
 #### FLUSHALL
@@ -62,5 +62,5 @@ Deletes all keys from the database.
 
 ```sh
 # FLUSHALL
-FLUSHALL
+?> FLUSHALL
 ```
