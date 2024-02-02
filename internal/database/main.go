@@ -8,8 +8,8 @@ import (
 )
 
 type Record struct {
-	Value string
-	Ttl   int64
+	Value string `json:"value"`
+	Ttl   int64  `json:"ttl"`
 }
 
 type Database struct {
@@ -64,6 +64,19 @@ func (db *Database) FlushAll() {
 	defer db.lock.Unlock()
 
 	db.data = make(map[string]Record)
+}
+
+func (db *Database) Snapshot() map[string]Record {
+	db.lock.RLock()
+	defer db.lock.RUnlock()
+
+	data := make(map[string]Record)
+
+	for k, v := range db.data {
+		data[k] = v
+	}
+
+	return data
 }
 
 func (db *Database) Load(filename string) error {

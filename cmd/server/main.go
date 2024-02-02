@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -8,6 +9,10 @@ import (
 
 	"github.com/asynched/gokvdb/internal/database"
 	"github.com/asynched/gokvdb/internal/server"
+)
+
+var (
+	addr = flag.String("addr", "localhost:9876", "server address")
 )
 
 func init() {
@@ -30,7 +35,9 @@ func init() {
 }
 
 func main() {
-	listener, err := net.Listen("tcp", ":9876")
+	flag.Parse()
+
+	listener, err := net.Listen("tcp", *addr)
 
 	if err != nil {
 		log.Fatalf("message='Failed to start server' error='%s'\n", err)

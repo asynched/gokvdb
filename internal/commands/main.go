@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -119,32 +118,27 @@ func Parse(cmd string) (Command, error) {
 	if strings.HasPrefix(cmd, "SET") {
 		parts := strings.Fields(cmd)
 
-		log.Println(parts)
-
-		if size := len(parts); size != 3 && size != 4 {
+		if len(parts) < 4 {
 			return nil, ErrInvalidCommand
 		}
 
-		if len(parts) == 3 {
-			return &SetCommand{Key: parts[1], Value: parts[2], Ttl: 0}, nil
-		}
-
-		ttl, err := strconv.ParseUint(parts[3], 10, 64)
+		value := strings.Join(parts[2:len(parts)-1], " ")
+		ttl, err := strconv.ParseInt(parts[len(parts)-1], 10, 64)
 
 		if err != nil {
 			return nil, ErrInvalidValue
 		}
 
 		if ttl <= 0 {
-			return &SetCommand{Key: parts[1], Value: parts[2], Ttl: 0}, nil
+			return &SetCommand{Key: parts[1], Value: value, Ttl: 0}, nil
 		}
 
 		exp := time.Now().Add(time.Duration(ttl) * time.Second).Unix()
 
-		return &SetCommand{Key: parts[1], Value: parts[2], Ttl: exp}, nil
+		return &SetCommand{Key: parts[1], Value: value, Ttl: exp}, nil
 	}
 
-	if strings.HasPrefix(cmd, "DELETE") {
+	if strings.HasPrefix(cmd, "DEL") {
 		parts := strings.Fields(cmd)
 
 		if len(parts) != 2 {
